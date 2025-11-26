@@ -147,3 +147,5 @@ vQIDAQAB
         cannot_give_to={"Abhinav", "Eli"},
     ),
 ]
+
+DRY_RUN = len({x.public_key.export_key() for x in PARTICIPANTS}) != len(PARTICIPANTS)

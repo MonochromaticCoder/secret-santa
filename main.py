@@ -5,7 +5,7 @@ import random
 import secrets
 import datetime
 
-from config import PARTICIPANTS
+from config import DRY_RUN, PARTICIPANTS
 
 if __name__ == "__main__":
     assert len(PARTICIPANTS) == len({x.id for x in PARTICIPANTS}), "Duplicate IDs"
@@ -33,7 +33,9 @@ if __name__ == "__main__":
     json_assignment = {}
     for gifter, recipient in zip(assignment, assignment[1:] + [assignment[0]]):
         cipher = PKCS1_OAEP.new(gifter.public_key)
-        encrypted_recipient = cipher.encrypt(recipient.id.encode()).hex()
+        encrypted_recipient = cipher.encrypt(
+            b"This is a dry run" if DRY_RUN else recipient.id.encode()
+        ).hex()
         json_assignment[gifter.id] = encrypted_recipient
         print(f"{gifter.id}: {encrypted_recipient}\n")
 
