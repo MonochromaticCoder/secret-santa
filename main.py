@@ -46,6 +46,7 @@ if __name__ == "__main__":
                 "generated_at": datetime.datetime.now().isoformat(),
                 "repo_url": f"{os.getenv("GITHUB_SERVER_URL")}/{os.getenv("GITHUB_REPOSITORY")}",
                 "commit_hash": os.getenv("GITHUB_SHA"),
+                "run_id": os.getenv("GITHUB_RUN_ID"),
             },
             "assignments": json_assignment,
         },
