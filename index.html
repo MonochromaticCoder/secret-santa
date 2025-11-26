@@ -1,0 +1,49 @@
+---
+---
+<style>
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 8px
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse
+    }
+
+    th,
+    td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd
+    }
+
+    code {
+        font-family: monospace;
+        word-break: break-all
+    }
+</style>
+<div class="container">
+    <h1>🎅 Secret Santa Assignments</h1>
+    <p>Commit: <a
+            href="{{ site.data.assignments.metadata.repo_url }}/commit/{{ site.data.assignments.metadata.commit_hash }}"><code>{{ site.data.assignments.metadata.commit_hash }}</code></a>
+    </p>
+    <p>Generated at: {{ site.data.assignments.metadata.generated_at }}</p>
+    <table>
+        <tr>
+            <th>Gifter</th>
+            <th>Recipient</th>
+            <th></th>
+        </tr>
+        {% for item in site.data.assignments.assignments %}
+        <tr>
+            <td><strong>{{ item[0] }}</strong></td>
+            <td><code>{{ item[1] }}</code></td>
+            <td><button onclick="navigator.clipboard.writeText('{{ item[1] }}')">Copy</button></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
