@@ -30,14 +30,15 @@ if __name__ == "__main__":
     ):
         random.shuffle(assignment)
 
-    json_assignment = {}
-    for gifter, recipient in zip(assignment, assignment[1:] + [assignment[0]]):
-        cipher = PKCS1_OAEP.new(gifter.public_key)
-        encrypted_recipient = cipher.encrypt(
-            b"This is a dry run" if DRY_RUN else recipient.id.encode()
-        ).hex()
-        json_assignment[gifter.id] = encrypted_recipient
-        print(f"{gifter.id}: {encrypted_recipient}\n")
+    assignments_json = {
+        gifter.id: (
+            PKCS1_OAEP.new(gifter.public_key)
+            .encrypt(b"This is a dry run" if DRY_RUN else recipient.id.encode())
+            .hex()
+        )
+        for gifter, recipient in zip(assignment, assignment[1:] + [assignment[0]])
+    }
+    print(json.dumps(assignments_json, sort_keys=True, indent=4))
 
     os.makedirs("_data", exist_ok=True)
     json.dump(
@@ -48,7 +49,7 @@ if __name__ == "__main__":
                 "commit_hash": os.getenv("GITHUB_SHA"),
                 "run_id": os.getenv("GITHUB_RUN_ID"),
             },
-            "assignments": json_assignment,
+            "assignments": assignments_json,
         },
         open("_data/assignments.json", "w"),
         sort_keys=True,
