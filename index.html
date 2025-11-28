@@ -26,6 +26,32 @@
         word-break: break-all
     }
 </style>
+<script>
+    async function decrypt(ciphertext) {
+        try {
+            const pemContents = prompt("Enter your private key")
+                .replace(/-----(BEGIN|END) PRIVATE KEY-----/g, "")
+                .replace(/\s/g, "");
+
+            const binaryDer = Uint8Array.fromBase64(pemContents);
+
+            const key = await crypto.subtle.importKey(
+                "pkcs8",
+                binaryDer,
+                { name: "RSA-OAEP", hash: "SHA-1" },
+                false,
+                ["decrypt"]
+            );
+
+            const plaintext = await crypto.subtle.decrypt({ name: "RSA-OAEP" }, key, Uint8Array.fromHex(ciphertext));
+
+            alert(new TextDecoder().decode(plaintext));
+        } catch (e) {
+            console.error(e);
+            alert(`Error: ${e}`);
+        }
+    }
+</script>
 <div class="container">
     <h1>🎅 Secret Santa Assignments</h1>
     <p>Commit: <a
@@ -45,7 +71,7 @@
         <tr>
             <td><strong>{{ item[0] }}</strong></td>
             <td><code>{{ item[1] }}</code></td>
-            <td><button onclick="navigator.clipboard.writeText('{{ item[1] }}')">Copy</button></td>
+            <td><button onclick="decrypt('{{ item[1] }}')">Decrypt</button></td>
         </tr>
         {% endfor %}
     </table>
